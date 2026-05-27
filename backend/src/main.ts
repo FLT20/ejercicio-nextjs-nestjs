@@ -1,9 +1,23 @@
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, LogLevel, Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
+function resolveLogLevels(): LogLevel[] {
+  const envLevel = (process.env.LOG_LEVEL || 'log').toLowerCase() as LogLevel;
+  const priority: LogLevel[] = ['error', 'warn', 'log', 'debug', 'verbose'];
+
+  const index = priority.indexOf(envLevel);
+  if (index === -1) {
+    return ['error', 'warn', 'log'];
+  }
+
+  return priority.slice(0, index + 1);
+}
+
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: resolveLogLevels(),
+  });
 
   app.enableCors({
     origin: '*',
@@ -23,6 +37,9 @@ async function bootstrap() {
 
   const port = process.env.PORT || 3001;
   await app.listen(port);
-  console.log(`Application is running on: http://localhost:${port}/api`);
+
+  const logger = new Logger('Bootstrap');
+  logger.log(`Application is running on: http://localhost:${port}/api`);
 }
+
 bootstrap();
