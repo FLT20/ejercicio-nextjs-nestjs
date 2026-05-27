@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const MONGODB_URI =
-  'mongodb+srv://FLT20:Cancelar123@pruebas.9jbehg8.mongodb.net/Pruebas?retryWrites=true&w=majority&appName=Pruebas';
+  'MONGODB_URI environment variable is not defined. Aborting.';
 
 const PREFIX = '[test-connection]';
 
